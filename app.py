@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from importlib import import_module
 import os
+import sys
 from flask import Flask, render_template, Response, request, abort
 import time
 
@@ -86,4 +87,5 @@ def change_params():
         return str(e)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', threaded=True)
+    port = int(sys.argv[1])
+    app.run(host='0.0.0.0',port=port threaded=True)
