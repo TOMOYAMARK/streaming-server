@@ -28,9 +28,15 @@ def set_timer(func,sec):
 app = Flask(__name__)
 
 fps = 30.0
-delay = 1.0
+delay = 0
 frames = queue.Queue()
 
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  return response
 
 @app.route('/')
 def index():
@@ -57,7 +63,7 @@ def gen(camera):
           frames.put(camera.get_frame())
           time_sta = time_end
 
-        if frames.qsize() >= delay * fps:
+        if frames.qsize() > delay * fps:
           yield (b'--frame\r\n'
             b'Content-Type: image/jpeg\r\n\r\n' + frames.get() + b'\r\n')
 
@@ -75,12 +81,15 @@ def video_feed():
 @app.route('/params', methods=['POST'])
 def change_params():
     global fps,delay
+    print("params requested")
     try:
         if request.method == 'POST':
-            data = request.get_json()
-            fps = data['fps']
-            delay = data['delay']
-            return
+            data = request.json
+            print(data)
+            fps = float(data['fps'])
+            delay = float(data['delay'])
+            print(data)
+            return ""
         else:
             return abort(400)
     except Exception as e:
