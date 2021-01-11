@@ -110,7 +110,7 @@ def change_dsize():
             data = request.json
             print(data)
             camera.dsize = (int(data['dsize_x']),int(data['dsize_y']))
-            print(dsize)
+            print(camera.dsize)
             return ""
         else:
             return abort(400)
