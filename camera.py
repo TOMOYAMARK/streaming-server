@@ -4,6 +4,8 @@ from base_camera import BaseCamera
 
 #カメラの解像度タプル（グローバル変数）
 dsize = (640,360)
+#カメラ番号 コマンドライン引数で設定(default 0)
+cameraNo = 0
 
 class Camera(BaseCamera):
     def __init__(self):
@@ -11,7 +13,7 @@ class Camera(BaseCamera):
 
     @staticmethod
     def frames():
-        camera = cv2.VideoCapture(1)
+        camera = cv2.VideoCapture(cameraNo)
         if not camera.isOpened():
             raise RuntimeError('Could not start camera.')
 
