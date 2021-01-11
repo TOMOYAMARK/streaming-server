@@ -5,7 +5,9 @@ import sys
 from flask import Flask, render_template, Response, request, abort
 import time
 
-from camera import Camera
+from camera import Camera, dsize
+import camera
+
 import threading
 import queue
 
@@ -81,7 +83,7 @@ def video_feed():
 @app.route('/params', methods=['POST'])
 def change_params():
     global fps,delay
-    print("params requested")
+    print("params change requested")
     try:
         if request.method == 'POST':
             data = request.json
@@ -89,6 +91,26 @@ def change_params():
             fps = float(data['fps'])
             delay = float(data['delay'])
             print(data)
+            return ""
+        else:
+            return abort(400)
+    except Exception as e:
+        return str(e)
+
+
+#カメラ画像解像度変更
+@app.route('/dsize', methods=['POST'])
+def change_dsize():
+    global dsize
+    print("dsize change requested")
+    print("current")
+    print(dsize)
+    try:
+        if request.method == 'POST':
+            data = request.json
+            print(data)
+            camera.dsize = (int(data['dsize_x']),int(data['dsize_y']))
+            print(dsize)
             return ""
         else:
             return abort(400)
